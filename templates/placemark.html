@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+{%block body%}
+<kml xmlns="http://earth.google.com/kml/2.0">
+<Placemark>
+  <name>{{ gift.name }}</name>
+  <LookAt>
+    <longitude>{{ gift.longitude }}</longitude>
+    <latitude>{{ gift.latitude }}</latitude>
+    <range>10000</range>
+    <tilt>0</tilt>
+    <heading>0</heading>
+  </LookAt>
+  <styleUrl>root://styles#default</styleUrl>
+  <Point>
+    <coordinates>{{ gift.longitude }},{{ gift.latitude }}</coordinates>
+  </Point>
+</Placemark>
+</kml>
+
+{%endblock%}

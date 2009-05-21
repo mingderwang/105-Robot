@@ -1,0 +1,279 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+
+Name       : Thermal 
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20080613
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>{%if gift%}{{gift.subject|escape}} - {%endif%}Robot 105 is on the way...</title>
+<meta name="keywords" content=""/>
+<meta name="description" content=""/>
+<link href="css/style.css" rel="stylesheet" type="text/css" media="screen"/>
+
+<script type="text/javascript" src="/static/script.js"></script>  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAU0xcljgmc3MI0v0I1a300RQZd9WN54AAYgK46OiTAO7YET-bpBRg4UYrjrkKnHGbjChUwlvs77uq3A"
+      type="text/javascript"></script>
+<script type="text/javascript">
+    
+    //<![CDATA[
+    
+var map;
+var userAdded = 1;var layers = {
+ "nankangoffice": 
+ {"url" : "http://www.chemlink.com.tw/about/ChemlinkNanKangOffice.kmz",
+   "name": "Nankang Office"},
+ "Home": 
+ {"url" : "http://105.appspot.com/placemark.kml",
+   "name": "Ming's Home"}
+};function onLoad() {
+  map = new GMap2(document.getElementById("map")); 
+  map.setCenter(new GLatLng( 24.9891,121.5586), 13);
+  map.addControl(new GSmallMapControl());  document.getElementById("url").value = "http://";
+  
+  for(var layer in layers) {
+    addTR(layer, layers[layer].name);
+  }
+  document.getElementById(layer).checked = true;
+  toggleGeoXML(layer, true);
+} function addGeoXML() {
+  var theUrl = document.getElementById("url").value;
+  theUrl = theUrl.replace(/^\s+/, "");
+  theUrl = theUrl.replace(/\s+$/, "");
+  if (theUrl.indexOf(' ') != -1) {
+    alert('Error - that address has a space in it');
+  } else {
+    var id = "userAdded" + userAdded;
+    layers[id] = {};
+    layers[id].url = theUrl;
+    layers[id].name = "User Layer " + userAdded;    addTR(id);
+    document.getElementById(id).checked = true;
+    toggleGeoXML(id, true);
+    userAdded++;
+  }
+}function addTR(id) {
+  var layerTR = document.createElement("tr");  var inputTD = document.createElement("td");
+  var input = document.createElement("input");
+  input.type = "checkbox";
+  input.id = id;
+  input.onclick = function () { toggleGeoXML(this.id, this.checked) };
+  inputTD.appendChild(input);  var nameTD = document.createElement("td");
+  var nameA = document.createElement("a");
+  nameA.href = layers[id].url;
+  var name = document.createTextNode(layers[id].name);
+  nameA.appendChild(name);
+  nameTD.appendChild(nameA);  layerTR.appendChild(inputTD);
+  layerTR.appendChild(nameTD);
+  document.getElementById("sidebarTBODY").appendChild(layerTR);
+}function zoomToGeoXML(geoXml) {
+  var center = geoXml.getDefaultCenter();
+  var span = geoXml.getDefaultSpan();
+  var sw = new GLatLng(center.lat() - span.lat() / 2,
+                       center.lng() - span.lng() / 2);
+  var ne = new GLatLng(center.lat() + span.lat() / 2,
+                       center.lng() + span.lng() / 2);
+  var bounds = new GLatLngBounds(sw, ne);
+  map.setCenter(center);
+  map.setZoom(map.getBoundsZoomLevel(bounds));
+}function toggleGeoXML(id, checked) {
+  if (checked) {
+    var geoXml = new GGeoXml(layers[id].url, function() {
+      if (geoXml.loadedCorrectly()) {
+        geoXml.gotoDefaultViewport(map);
+        }});
+    GEvent.addListener(geoXml, 'moveend', function() {
+      if (geoXml.loadedCorrectly()) {
+        geoXml.gotoDefaultViewport(map);
+        layers[id].geoxml = geoXml;
+        document.getElementById("status").innerHTML = "completed";
+      }
+    });
+    
+    layers[id].geoXml = geoXml;
+    map.addOverlay(layers[id].geoXml);
+    document.getElementById("status").innerHTML = "";
+  
+  } else if (layers[id].geoXml) {
+    map.removeOverlay(layers[id].geoXml);
+  }
+}    //]]>
+</script>
+
+</head>
+
+<body onload="onLoad()">
+
+<div id="header">
+	<div id="logo">
+		<h1>Tracking Fun!</h1>
+
+	</div><!-- end #search -->
+</div><!-- end #header -->
+
+<div id="menu">
+	<ul>
+		<li class="current_page_item"><a href="#">Home</a>
+		<li><a href="#">Blog</a>
+		<li><a href="#">Photos</a>
+		<li><a href="#">About</a>
+		<li><a href="#">Links</a>
+		<li>
+	<div id="longin">
+{%if user %}
+<b>{{user.nickname}} &lt;{{user.email}}></b>
+{%if is_admin%} | <a href="/_ah/admin">Admin</a>{%endif%}
+{%if sign_out%} | <a href="{{sign_out}}">Sign Out</a>{%endif%}
+{% else %}
+{%if sign_in%}<a href="{{sign_in}}">Sign In</a>{%endif%}
+{%endif%}</div>
+                </li>
+	</ul>
+
+</div><!-- end #menu -->
+
+
+
+<div id="page">
+   <div id="content">
+   
+<div class="post">
+			<h1 class="title"><a href="#">Welcome to Tracking Fun! </a></h1>
+			<p class="meta">Introduction</p>
+			<div class="entry">
+				<p>{%block body%}{%endblock%}</p>
+		<p></p>
+			<fieldset>
+                  <input id="url" value="" size="40"/>
+                  <input type="button" value="Add" onclick="addGeoXML();"/>
+			</fieldset>
+        <p></p>
+			</div>
+		
+</div>
+
+<div id="map" style="width: 400px; height: 400px; float:left; border: 1px solid black;"></div>
+    <table id="sidebarTABLE">
+    <tbody id="sidebarTBODY">
+    </tbody>
+    </table>
+<div id="status" style="text-align:center; color: #ff0000"></div>
+
+
+
+
+    </div>
+	<div id="sidebar">
+		<ul>
+			<li>
+				<p>This is a trail of a GPS devices tracking system 
+  using Google App Engine platform. It will support Microsoft Mobile 6.0, 
+  Symbia S60, and Google phone as well in the near future. The location recorder 
+  could be either a smartphone with build-in GPS receiver or a GPS/GPRS tracker 
+  such as <a href="http://www.tecsyscom.com/tec/modules/tinycontent2/index.php?id=12">G-22</a>, 
+  which is available for order from <a href="http://www.tecsyscom.com/tec_En/modules/tinycontent/index.php?id=1">TEC 
+  System</a>.</p>
+  
+			<li id="calendar">
+				<h2>Calendar</h2>
+				<div id="calendar_wrap">
+					<table summary="Calendar">
+						<caption>
+						March 2008
+						</caption>
+						<thead>
+							<tr>
+								<th abbr="Monday" scope="col" title="Monday">M</th>
+								<th abbr="Tuesday" scope="col" title="Tuesday">T</th>
+								<th abbr="Wednesday" scope="col" title="Wednesday">W</th>
+								<th abbr="Thursday" scope="col" title="Thursday">T</th>
+								<th abbr="Friday" scope="col" title="Friday">F</th>
+								<th abbr="Saturday" scope="col" title="Saturday">S</th>
+								<th abbr="Sunday" scope="col" title="Sunday">S</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr>
+								<td abbr="February" colspan="3" id="prev"><a href="#" title="">&laquo; Feb</a></td>
+								<td class="pad">&nbsp;</td>
+								<td abbr="April" colspan="3" id="next"><a href="#" title="">Apr &raquo;</a></td>
+							</tr>
+						</tfoot>
+						<tbody>
+							<tr>
+								<td colspan="5" class="pad">&nbsp;</td>
+								<td>1</td>
+								<td>2</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td>4</td>
+								<td>5</td>
+								<td>6</td>
+								<td>7</td>
+								<td>8</td>
+								<td>9</td>
+							</tr>
+							<tr>
+								<td>10</td>
+								<td id="today">11</td>
+								<td>12</td>
+								<td>13</td>
+								<td>14</td>
+								<td>15</td>
+								<td>16</td>
+							</tr>
+							<tr>
+								<td>17</td>
+								<td>18</td>
+								<td>19</td>
+								<td>20</td>
+								<td>21</td>
+								<td>22</td>
+								<td>23</td>
+							</tr>
+							<tr>
+								<td>24</td>
+								<td>25</td>
+								<td>26</td>
+								<td>27</td>
+								<td>28</td>
+								<td>29</td>
+								<td>30</td>
+							</tr>
+							<tr>
+								<td>31</td>
+								<td class="pad" colspan="6">&nbsp;</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</li>
+			<li>
+				<h2>Categories</h2>
+				<ul>
+					<li><a href="#"> under construction</a> (1) </li>
+				</ul>
+			<li>
+				<h2>Archives</h2>
+				<ul>
+					<li><a href="#"> arcive</a> (1)<!-- end #sidebar --></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	
+	<div style="CLEAR: both"></div>
+</div><!-- end #page -->
+
+<div id="footer">
+	<p>Copyright (c) 2008 Tecsyscom.com. All rights reserved. CSS is designed by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+</div><!-- end #footer -->
+</body>
+</html>

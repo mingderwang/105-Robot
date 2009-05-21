@@ -1,0 +1,17 @@
+application: 105
+version: 1005
+runtime: python
+api_version: 1
+
+handlers:  
+- url: /images
+  static_dir: images
+  
+- url: /bundles
+  static_dir: bundles
+  
+- url: /css
+  static_dir: css
+
+- url: /.*
+  script: 105.py

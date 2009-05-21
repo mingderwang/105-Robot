@@ -1,0 +1,17 @@
+{%extends "base.html"%}
+{%block body%}
+<h2>Free GPS Uploading Places</h2>
+<p> </p>
+
+Click here to get more place!
+<ul>
+{%for gift in gifts%}
+<li>
+  <a href="{%url views.edit gift.key.id%}">{{gift.name|escape}}</a>
+  - created {{gift.created|date:"Y/m/d H:i:s"}} by {{gift.giver}}
+{%endfor%}
+</ul>
+
+<a href="{%url views.new%}">Create new place.</a>
+
+{%endblock%}
